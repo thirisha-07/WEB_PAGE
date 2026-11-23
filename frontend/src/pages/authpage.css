@@ -1,0 +1,278 @@
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+  background: linear-gradient(135deg, #e8edff, #f8f9ff);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 1000px;
+  min-height: 620px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: white;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(30, 41, 90, 0.14);
+}
+
+.auth-left {
+  padding: 45px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: white;
+  background: linear-gradient(145deg, #172554, #4338ca, #6366f1);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  background: white;
+  color: #4338ca;
+  border-radius: 10px;
+  font-size: 22px;
+}
+
+.welcome-content {
+  max-width: 370px;
+}
+
+.welcome-label {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #c7d2fe;
+  font-weight: 700;
+}
+
+.welcome-content h1 {
+  font-size: 42px;
+  line-height: 1.2;
+  margin: 20px 0;
+}
+
+.welcome-content p {
+  color: #e0e7ff;
+  line-height: 1.8;
+}
+
+.left-footer {
+  color: #c7d2fe;
+  font-size: 13px;
+}
+
+.auth-right {
+  padding: 45px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.form-heading h2 {
+  color: #172554;
+  font-size: 30px;
+  margin: 0 0 8px;
+}
+
+.form-heading p {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 25px;
+}
+
+.auth-tabs {
+  display: flex;
+  padding: 5px;
+  gap: 8px;
+  background: #f1f5f9;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.auth-tabs button {
+  flex: 1;
+  border: none;
+  padding: 12px;
+  background: transparent;
+  color: #64748b;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-tabs button.active {
+  background: white;
+  color: #4338ca;
+  box-shadow: 0 2px 8px #00000010;
+}
+
+.auth-right form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-right label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  margin: 12px 0 7px;
+}
+
+.auth-right input {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #dbe2ee;
+  border-radius: 9px;
+  outline: none;
+  font-size: 14px;
+  background: #fbfcff;
+}
+
+.auth-right input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px #6366f120;
+}
+
+.submit-button {
+  width: 100%;
+  margin-top: 25px;
+  padding: 14px;
+  border: none;
+  border-radius: 9px;
+  background: linear-gradient(100deg, #3730a3, #6366f1);
+  color: white;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  opacity: 0.9;
+}
+
+.submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.success-message,
+.error-message {
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.success-message {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.error-message {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.switch-text {
+  text-align: center;
+  color: #64748b;
+  font-size: 13px;
+  margin-top: 22px;
+}
+
+.switch-text button {
+  border: none;
+  background: transparent;
+  color: #4338ca;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.security-note {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 11px;
+  margin-top: 25px;
+}
+
+.logged-in-box {
+  text-align: center;
+  padding: 25px 0;
+}
+
+.success-icon {
+  width: 60px;
+  height: 60px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 30px;
+  margin: 0 auto 15px;
+}
+
+.logged-in-box h3 {
+  color: #172554;
+}
+
+.logged-in-box p {
+  color: #64748b;
+}
+
+@media (max-width: 750px) {
+  .auth-container {
+    padding: 15px;
+  }
+
+  .auth-card {
+    max-width: 480px;
+    grid-template-columns: 1fr;
+  }
+
+  .auth-left {
+    min-height: 220px;
+    padding: 25px;
+  }
+
+  .welcome-content {
+    margin-top: 30px;
+  }
+
+  .welcome-content h1 {
+    font-size: 30px;
+  }
+
+  .left-footer {
+    display: none;
+  }
+
+  .auth-right {
+    padding: 28px 22px;
+  }
+}
