@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import api from "../services/api";
-import "./AuthPage.css";
+import "./authpage.css";
 
 function AuthPage() {
   const [mode, setMode] = useState("login");
