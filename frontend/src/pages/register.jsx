@@ -35,10 +35,23 @@ function Register() {
             });
 
         } catch (error) {
-            console.log(error.response?.data);
-            setMessage(
-                JSON.stringify(error.response?.data || "Registration failed!")
-            );
+            console.log("Registration error:", error.response?.data);
+
+            const data = error.response?.data;
+
+            if (typeof data === "string") {
+                setMessage(data);
+            } else if (data && typeof data === "object") {
+                setMessage(
+                    Object.entries(data)
+                        .map(([key, value]) =>
+                            `${key}: ${Array.isArray(value) ? value.join(", ") : String(value)}`
+                        )
+                        .join(" | ")
+                );
+            } else {
+                setMessage("Registration failed! Please try again.");
+            }
         }
     };
 

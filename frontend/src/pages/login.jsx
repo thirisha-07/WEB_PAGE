@@ -23,7 +23,14 @@ function Login() {
 
         } catch (error) {
             console.log(error.response?.data);
-            alert("Login failed!");
+
+            const message = error.response?.data;
+
+            alert(
+                typeof message === "string"
+                    ? message
+                    : message?.detail || JSON.stringify(message) || "Login failed!"
+            );
         }
     };
 
