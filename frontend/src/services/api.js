@@ -1,7 +1,8 @@
+
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "/api/accounts/",
+  baseURL: "https://web-page-backend-35w0.onrender.com/api/accounts/",
 });
 
 export default api;

@@ -3,6 +3,31 @@ import { useState } from "react";
 import api from "../services/api";
 import "./authpage.css";
 
+// Convert backend error objects into readable messages
+function formatApiError(value) {
+  if (typeof value === "string" || typeof value === "number") {
+    return String(value);
+  }
+
+  if (Array.isArray(value)) {
+    return value
+      .map(formatApiError)
+      .filter(Boolean)
+      .join(", ");
+  }
+
+  if (value && typeof value === "object") {
+    return Object.entries(value)
+      .map(([key, val]) => {
+        return `${key}: ${formatApiError(val)}`;
+      })
+      .filter(Boolean)
+      .join(" | ");
+  }
+
+  return "";
+}
+
 function AuthPage() {
   const [mode, setMode] = useState("login");
 
@@ -29,6 +54,7 @@ function AuthPage() {
     setMode(newMode);
     setMessage("");
     setError("");
+
     setFormData({
       username: "",
       email: "",
@@ -37,8 +63,10 @@ function AuthPage() {
     });
   };
 
+  // Registration
   const handleRegister = async (e) => {
     e.preventDefault();
+
     setMessage("");
     setError("");
 
@@ -50,13 +78,18 @@ function AuthPage() {
     setLoading(true);
 
     try {
-      await api.post("register/", {
+      const response = await api.post("register/", {
         username: formData.username,
         email: formData.email,
         password: formData.password,
       });
 
-      setMessage("Registration completed successfully! Please login.");
+      console.log("Registration response:", response.data);
+
+      setMessage(
+        "Registration completed successfully! Please login."
+      );
+
       setMode("login");
 
       setFormData({
@@ -65,20 +98,26 @@ function AuthPage() {
         password: "",
         confirmPassword: "",
       });
+
     } catch (err) {
       const data = err.response?.data;
-      const firstError = data
-        ? Object.values(data).flat()[0]
-        : "Registration failed. Please try again.";
 
-      setError(String(firstError));
+      console.log("Registration error:", data || err.message);
+
+      setError(
+        formatApiError(data) ||
+        "Registration failed. Please try again."
+      );
+
     } finally {
       setLoading(false);
     }
   };
 
+  // Login
   const handleLogin = async (e) => {
     e.preventDefault();
+
     setMessage("");
     setError("");
     setLoading(true);
@@ -89,28 +128,47 @@ function AuthPage() {
         password: formData.password,
       });
 
+      if (!response.data.access || !response.data.refresh) {
+        throw new Error("Login response does not contain authentication tokens.");
+      }
+
       localStorage.setItem("accessToken", response.data.access);
       localStorage.setItem("refreshToken", response.data.refresh);
 
       setMessage("Login successful! You are authenticated.");
       setLoggedIn(true);
+
       setFormData({
         ...formData,
         password: "",
       });
+
     } catch (err) {
-      setError("Invalid username or password.");
+      const data = err.response?.data;
+
+      console.log("Login error:", data || err.message);
+
+      setError(
+        formatApiError(data) ||
+        err.message ||
+        "Invalid username or password."
+      );
+
     } finally {
       setLoading(false);
     }
   };
 
+  // Logout
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
+
     setLoggedIn(false);
     setMessage("You have logged out successfully.");
+    setError("");
     setMode("login");
+
     setFormData({
       username: "",
       email: "",
@@ -123,14 +181,19 @@ function AuthPage() {
     <div className="auth-container">
       <div className="auth-card">
 
+        {/* Left Side */}
         <div className="auth-left">
+
           <div className="brand">
             <span className="brand-icon">A</span>
             ACCOUNT PORTAL
           </div>
 
           <div className="welcome-content">
-            <span className="welcome-label">YOUR ACCOUNT STARTS HERE</span>
+
+            <span className="welcome-label">
+              YOUR ACCOUNT STARTS HERE
+            </span>
 
             <h1>
               {mode === "login"
@@ -143,16 +206,20 @@ function AuthPage() {
                 ? "Sign in securely and continue with your account."
                 : "Create your account and get started in just a few steps."}
             </p>
+
           </div>
 
           <div className="left-footer">
             Secure • Simple • Reliable
           </div>
+
         </div>
 
+        {/* Right Side */}
         <div className="auth-right">
 
           <div className="form-heading">
+
             <h2>
               {loggedIn
                 ? "Account Access"
@@ -166,10 +233,13 @@ function AuthPage() {
                 ? "Enter your details to access your account."
                 : "Enter your details to register a new account."}
             </p>
+
           </div>
 
+          {/* Login and Register Tabs */}
           {!loggedIn && (
             <div className="auth-tabs">
+
               <button
                 type="button"
                 className={mode === "login" ? "active" : ""}
@@ -185,24 +255,61 @@ function AuthPage() {
               >
                 Create Account
               </button>
+
             </div>
           )}
 
-          {message && <div className="success-message">{message}</div>}
-          {error && <div className="error-message">{error}</div>}
+          {/* Success Message */}
+          {message && (
+            <div className="success-message">
+              {message}
+            </div>
+          )}
 
+          {/* Error Message */}
+          {error && (
+            <div className="error-message">
+              {error}
+            </div>
+          )}
+
+          {/* Logged In Screen */}
           {loggedIn ? (
+
             <div className="logged-in-box">
+
               <div className="success-icon">✓</div>
-              <h3>Welcome, {formData.username}!</h3>
-              <p>You have successfully logged in.</p>
-              <button className="submit-button" onClick={handleLogout}>
+
+              <h3>
+                Welcome, {formData.username}!
+              </h3>
+
+              <p>
+                You have successfully logged in.
+              </p>
+
+              <button
+                className="submit-button"
+                onClick={handleLogout}
+              >
                 Logout
               </button>
+
             </div>
+
           ) : (
-            <form onSubmit={mode === "login" ? handleLogin : handleRegister}>
+
+            /* Login and Registration Form */
+            <form
+              onSubmit={
+                mode === "login"
+                  ? handleLogin
+                  : handleRegister
+              }
+            >
+
               <label>Username</label>
+
               <input
                 type="text"
                 name="username"
@@ -212,9 +319,11 @@ function AuthPage() {
                 required
               />
 
+              {/* Email Field */}
               {mode === "register" && (
                 <>
                   <label>Email Address</label>
+
                   <input
                     type="email"
                     name="email"
@@ -227,6 +336,7 @@ function AuthPage() {
               )}
 
               <label>Password</label>
+
               <input
                 type="password"
                 name="password"
@@ -236,9 +346,11 @@ function AuthPage() {
                 required
               />
 
+              {/* Confirm Password */}
               {mode === "register" && (
                 <>
                   <label>Confirm Password</label>
+
                   <input
                     type="password"
                     name="confirmPassword"
@@ -250,6 +362,7 @@ function AuthPage() {
                 </>
               )}
 
+              {/* Submit Button */}
               <button
                 className="submit-button"
                 type="submit"
@@ -261,11 +374,14 @@ function AuthPage() {
                   ? "Login to Account"
                   : "Create My Account"}
               </button>
+
             </form>
           )}
 
+          {/* Switch Login and Register */}
           {!loggedIn && (
             <p className="switch-text">
+
               {mode === "login"
                 ? "Don't have an account? "
                 : "Already have an account? "}
@@ -273,11 +389,16 @@ function AuthPage() {
               <button
                 type="button"
                 onClick={() =>
-                  switchMode(mode === "login" ? "register" : "login")
+                  switchMode(
+                    mode === "login" ? "register" : "login"
+                  )
                 }
               >
-                {mode === "login" ? "Create Account" : "Login"}
+                {mode === "login"
+                  ? "Create Account"
+                  : "Login"}
               </button>
+
             </p>
           )}
 
