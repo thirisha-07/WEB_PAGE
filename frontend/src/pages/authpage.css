@@ -276,3 +276,13 @@ body {
     padding: 28px 22px;
   }
 }
+
+input {
+  color: #000000 !important;
+  background-color: #ffffff;
+}
+
+input::placeholder {
+  color: #888888;
+  opacity: 1;
+}
